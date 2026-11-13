@@ -9,7 +9,7 @@ service cloud.firestore {
         && request.auth.token.email == 'teacher@entry-login-portal-2a90ce.firebaseapp.com';
     }
 
-    // 학생 메시지: 누구나 "쓰기"만 가능, 읽기/삭제는 선생님만
+    // 학생 메시지: 누구나 새로 쓰기 가능, 목록 읽기/삭제/답장은 선생님만
     match /messages/{messageId} {
       allow create: if request.resource.data.keys().hasOnly(['num', 'text', 'createdAt'])
         && request.resource.data.keys().hasAll(['num', 'text', 'createdAt'])
@@ -21,8 +21,19 @@ service cloud.firestore {
         && request.resource.data.text.size() <= 500
         && request.resource.data.createdAt == request.time;
 
-      allow read, delete: if isTeacher();
-      allow update: if false;
+      // 목록 조회와 삭제는 선생님만
+      allow list, delete: if isTeacher();
+
+      // 문서 하나 읽기: 선생님, 또는 그 메시지의 고유 ID를 아는 사람(보낸 학생의 브라우저)
+      // ID는 20자 무작위 값이라 추측할 수 없고, 목록 조회는 막혀 있어 다른 학생 메시지는 볼 수 없음
+      allow get: if true;
+
+      // 답장: 선생님만, reply / repliedAt 두 필드만 바꿀 수 있음
+      allow update: if isTeacher()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reply', 'repliedAt'])
+        && request.resource.data.reply is string
+        && request.resource.data.reply.size() <= 500
+        && request.resource.data.repliedAt == request.time;
     }
 
     // 그 밖의 모든 경로는 차단

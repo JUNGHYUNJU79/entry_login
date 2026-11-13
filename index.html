@@ -518,6 +518,92 @@
 
     .inbox-del:hover { background: #fee2e2; color: #dc2626; }
 
+    .reply-box {
+      margin-top: 8px;
+      background: #e8f9ed;
+      border: 1px solid #b7f0c5;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 14px;
+      color: #14532d;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .reply-box .reply-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .reply-wait {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .reply-actions {
+      margin-top: 8px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-sm {
+      padding: 5px 12px;
+      font-size: 13px;
+      border-radius: 8px;
+    }
+
+    .reply-editor {
+      margin-top: 8px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .reply-editor textarea {
+      font: inherit;
+      font-size: 14px;
+      width: 100%;
+      min-height: 64px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      resize: vertical;
+    }
+
+    .reply-editor textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .badge-new {
+      display: inline-block;
+      background: #ef4444;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 1px 7px;
+      border-radius: 999px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .my-messages {
+      margin-top: 20px;
+      border-top: 1px dashed var(--border);
+      padding-top: 16px;
+    }
+
+    .my-messages h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-bottom: 10px;
+    }
+
     .inbox-empty {
       font-size: 13px;
       color: var(--text-muted);
@@ -602,7 +688,7 @@
         <h2>⭐ 1초 마법 북마크 (가장 쉬운 방법!)</h2>
         <p>
           오른쪽 버튼을 마우스로 꾹 눌러 웹 브라우저 상단의 <strong>[북마크바(즐겨찾기)]</strong>로 끌어다 놓으세요!<br>
-          엔트리 로그인 창에서 이 북마크를 딱 누르면 번호판이 나타나 클릭 즉시 로그인됩니다.
+          확장 프로그램이 없는 컴퓨터에서는 아래 번호 카드를 누른 뒤, 열린 엔트리 창에서 이 북마크만 누르면 바로 로그인됩니다.
         </p>
       </div>
       <a class="bookmarklet-btn" id="bookmarklet-link" href="#" title="마우스로 끌어서 북마크바에 놓으세요!">
@@ -671,6 +757,11 @@
           </button>
         </div>
       </form>
+
+      <div class="my-messages" id="my-messages">
+        <h4>📮 <span id="my-messages-title">내가 보낸 메시지와 선생님 답장</span></h4>
+        <div class="inbox-list" id="my-messages-list"></div>
+      </div>
 
       <details class="inbox" id="inbox">
         <summary>
@@ -787,9 +878,68 @@
       }
     }
 
-    // Build Bookmarklet Code
-    const bookmarkletScript = `javascript:(function(){const s=[{n:1,i:"wol0161008",p:"a1234567"},{n:2,i:"wol0298243",p:"a1234567"},{n:3,i:"wol0311539",p:"a1234567"},{n:4,i:"wol0419179",p:"a1234567"},{n:5,i:"wol0526983",p:"a1234567"},{n:6,i:"wol0627207",p:"a1234567"},{n:7,i:"wol078147",p:"a1234567"},{n:8,i:"wol0885499",p:"a1234567"},{n:9,i:"wol0986416",p:"a1234567"},{n:10,i:"wol1026316",p:"a1234567"},{n:11,i:"wol1111588",p:"a1234567"},{n:12,i:"wol1247264",p:"a1234567"},{n:13,i:"wol1379178",p:"a1234567"},{n:14,i:"wol1452218",p:"a1234567"},{n:15,i:"wol1575234",p:"a1234567"}];if(!location.href.includes("playentry.org/signin")){if(confirm("엔트리 로그인 페이지로 이동할까요?")){location.href="https://playentry.org/signin";}return;}let p=document.getElementById("hw-panel");if(p){p.remove();}p=document.createElement("div");p.id="hw-panel";p.style="position:fixed;top:40px;left:50%;transform:translateX(-50%);z-index:999999;background:#fff;border:3px solid #00c73c;border-radius:18px;padding:24px;box-shadow:0 12px 36px rgba(0,0,0,0.35);text-align:center;width:420px;font-family:sans-serif;";p.innerHTML='<div style="font-size:18px;font-weight:bold;margin-bottom:12px;color:#111;">🏫 하원초 6학년 내 번호 클릭!</div><div id="hw-g" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;"></div><button id="hw-c" style="margin-top:14px;border:none;background:#eee;padding:7px 18px;border-radius:8px;cursor:pointer;font-weight:bold;">닫기</button>';document.body.appendChild(p);document.getElementById("hw-c").onclick=()=>p.remove();const g=document.getElementById("hw-g");s.forEach(st=>{const b=document.createElement("button");b.innerText=st.n+"번";b.style="padding:10px 4px;font-weight:bold;font-size:15px;border:1.5px solid #00c73c;border-radius:8px;background:#f0fff4;cursor:pointer;color:#008528;";b.onclick=()=>{const u=document.getElementById("username"),pw=document.getElementById("password");if(!u||!pw){alert("로그인 입력창을 찾을 수 없습니다.");return;}const setV=(el,val)=>{const set=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,"value").set;if(set){set.call(el,val);}else{el.value=val;}el.dispatchEvent(new Event("input",{bubbles:true}));el.dispatchEvent(new Event("change",{bubbles:true}));};setV(u,st.i);setV(pw,st.p);setTimeout(()=>{const btn=document.querySelector(\\'[data-testid="signin"]\\')||document.querySelector(".entry_btn button")||document.querySelector(".entry_btn");if(btn){btn.click();p.remove();}else{alert("로그인 버튼을 눌러주세요.");}},150);};g.appendChild(b);});})();`;
+    // ===== 마법 북마크(북마크릿) =====
+    // 확장 프로그램이 없는 PC용. 엔트리 로그인 화면에서 북마크를 누르면:
+    //  - 포털에서 번호 카드를 눌러 들어온 경우(?hawon=번호) → 그 번호로 바로 입력 + 로그인
+    //  - 그냥 들어온 경우 → 1~15번 번호판이 떠서 고르면 입력 + 로그인
+    function hawonBookmarklet(S) {
+      if (!/playentry\.org\/signin/.test(location.href)) {
+        if (confirm("엔트리 로그인 페이지로 이동할까요?")) location.href = "https://playentry.org/signin";
+        return;
+      }
+      function setV(el, val) {
+        var set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set;
+        set.call(el, val);
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      function login(st) {
+        var u = document.getElementById("username"), pw = document.getElementById("password");
+        if (!u || !pw) { alert("로그인 입력창을 찾을 수 없습니다. 잠시 후 다시 눌러 주세요."); return; }
+        setV(u, st[1]); setV(pw, st[2]);
+        var auto = document.getElementById("AutoLogin");
+        if (auto && !auto.checked) auto.click();
+        var old = document.getElementById("hw-panel"); if (old) old.remove();
+        setTimeout(function () {
+          var btn = document.querySelector('[data-testid="signin"]') || document.getElementById("signin");
+          if (btn) btn.click(); else alert(st[0] + "번 아이디/비밀번호를 넣었어요. 로그인 버튼을 눌러 주세요.");
+        }, 200);
+      }
+      var m = location.search.match(/[?&]hawon=(\d+)/) || location.hash.match(/hawon=(\d+)/);
+      if (m) {
+        var hit = S.filter(function (x) { return x[0] === parseInt(m[1], 10); })[0];
+        if (hit) { login(hit); return; }
+      }
+      var p = document.getElementById("hw-panel"); if (p) p.remove();
+      p = document.createElement("div");
+      p.id = "hw-panel";
+      p.style.cssText = "position:fixed;top:40px;left:50%;transform:translateX(-50%);z-index:999999;background:#fff;border:3px solid #00c73c;border-radius:18px;padding:24px;box-shadow:0 12px 36px rgba(0,0,0,.35);text-align:center;width:420px;max-width:92vw;font-family:sans-serif;";
+      var t = document.createElement("div");
+      t.textContent = "🏫 하원초 6학년 내 번호 클릭!";
+      t.style.cssText = "font-size:18px;font-weight:bold;margin-bottom:12px;color:#111;";
+      var g = document.createElement("div");
+      g.style.cssText = "display:grid;grid-template-columns:repeat(5,1fr);gap:8px;";
+      S.forEach(function (st) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.textContent = st[0] + "번";
+        b.style.cssText = "padding:10px 4px;font-weight:bold;font-size:15px;border:1.5px solid #00c73c;border-radius:8px;background:#f0fff4;cursor:pointer;color:#008528;";
+        b.onclick = function () { login(st); };
+        g.appendChild(b);
+      });
+      var c = document.createElement("button");
+      c.type = "button";
+      c.textContent = "닫기";
+      c.style.cssText = "margin-top:14px;border:none;background:#eee;padding:7px 18px;border-radius:8px;cursor:pointer;font-weight:bold;";
+      c.onclick = function () { p.remove(); };
+      p.append(t, g, c);
+      document.body.appendChild(p);
+    }
 
+    const bookmarkletData = STUDENTS.map(s => [s.num, s.id, s.pw]);
+    const bookmarkletScript = "javascript:" + encodeURIComponent(
+      "(" + hawonBookmarklet.toString() + ")(" + JSON.stringify(bookmarkletData) + ");void 0;"
+    );
     document.getElementById("bookmarklet-link").href = bookmarkletScript;
   </script>
 
@@ -798,7 +948,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
     import {
       getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot,
-      deleteDoc, doc, getDocs, writeBatch
+      deleteDoc, doc, getDocs, writeBatch, updateDoc
     } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
     import {
       getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
@@ -859,7 +1009,8 @@
       }
       sendBtn.disabled = true;
       try {
-        await addDoc(messagesCol, { num, text: text.slice(0, 500), createdAt: serverTimestamp() });
+        const ref = await addDoc(messagesCol, { num, text: text.slice(0, 500), createdAt: serverTimestamp() });
+        rememberMyMessage(ref.id, num);
         msgText.value = "";
         msgCounter.textContent = "0 / 500";
         showToast(`[${num}번] 메시지를 보냈어요! 선생님이 확인할게요.`, "💌");
@@ -871,9 +1022,199 @@
       }
     });
 
+    // ---------- 학생: 내가 보낸 메시지와 답장 보기 ----------
+    // 이 브라우저에서 보낸 메시지의 고유 ID만 기억해 두고, 그 문서만 읽습니다. (목록 조회는 보안 규칙상 불가)
+    const MY_KEY = "hawon_my_messages";
+    const SEEN_KEY = "hawon_seen_replies";
+    const MAX_MINE = 30;
+    const myCache = {};      // id -> {num, text, createdAt, reply, repliedAt}
+    const myUnsubs = {};     // id -> unsubscribe
+
+    function loadJSON(key, fallback) {
+      try { const v = JSON.parse(localStorage.getItem(key) || "null"); return v ?? fallback; } catch (e) { return fallback; }
+    }
+    function saveJSON(key, val) {
+      try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+    }
+    function myList() { return loadJSON(MY_KEY, []); }
+
+    function rememberMyMessage(id, num) {
+      const list = myList().filter(x => x.id !== id);
+      list.push({ id, num });
+      saveJSON(MY_KEY, list.slice(-MAX_MINE));
+      watchMyMessages();
+    }
+
+    function forgetMyMessage(id) {
+      saveJSON(MY_KEY, myList().filter(x => x.id !== id));
+      if (myUnsubs[id]) { myUnsubs[id](); delete myUnsubs[id]; }
+      delete myCache[id];
+    }
+
+    function watchMyMessages() {
+      myList().forEach(({ id }) => {
+        if (myUnsubs[id]) return;
+        myUnsubs[id] = onSnapshot(doc(db, "messages", id), snap => {
+          if (!snap.exists()) { forgetMyMessage(id); renderMyMessages(); return; }
+          const d = snap.data({ serverTimestamps: "estimate" });
+          const prev = myCache[id];
+          myCache[id] = {
+            num: d.num, text: d.text,
+            createdAt: d.createdAt ? d.createdAt.toDate() : null,
+            reply: d.reply || "",
+            repliedAt: d.repliedAt ? d.repliedAt.toDate() : null
+          };
+          // 화면을 보고 있는 동안 새 답장이 오면 알림
+          if (prev && myCache[id].reply && myCache[id].reply !== prev.reply && String(d.num) === msgNum.value) {
+            showToast(`[${d.num}번] 선생님 답장이 도착했어요!`, "💬");
+          }
+          renderMyMessages();
+        }, err => console.error(err));
+      });
+    }
+
+    function renderMyMessages() {
+      const num = parseInt(msgNum.value, 10);
+      const box = $("my-messages-list");
+      $("my-messages-title").textContent = `${num}번이 보낸 메시지와 선생님 답장`;
+      const mine = myList()
+        .filter(x => x.num === num && myCache[x.id])
+        .map(x => ({ id: x.id, ...myCache[x.id] }))
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      box.innerHTML = "";
+      if (mine.length === 0) {
+        box.innerHTML = '<div class="inbox-empty">이 컴퓨터에서 보낸 메시지가 아직 없습니다. 메시지를 보내면 여기에서 선생님 답장을 볼 수 있어요.</div>';
+        return;
+      }
+      const seen = loadJSON(SEEN_KEY, {});
+      mine.forEach(m => {
+        const item = document.createElement("div");
+        item.className = "inbox-item";
+        const n = document.createElement("div");
+        n.className = "inbox-num";
+        n.textContent = m.num;
+        const body = document.createElement("div");
+        body.className = "inbox-body";
+        const text = document.createElement("div");
+        text.className = "inbox-text";
+        text.textContent = m.text;
+        const time = document.createElement("div");
+        time.className = "inbox-time";
+        time.textContent = "보낸 시각 " + formatTime(m.createdAt);
+        body.append(text, time);
+        if (m.reply) {
+          const rb = document.createElement("div");
+          rb.className = "reply-box";
+          const label = document.createElement("span");
+          label.className = "reply-label";
+          label.textContent = "💬 선생님 답장 · " + formatTime(m.repliedAt);
+          const stamp = m.repliedAt ? m.repliedAt.getTime() : 0;
+          if (seen[m.id] !== stamp) {
+            const badge = document.createElement("span");
+            badge.className = "badge-new";
+            badge.textContent = "NEW";
+            label.appendChild(badge);
+          }
+          rb.append(label, document.createTextNode(m.reply));
+          body.appendChild(rb);
+        } else {
+          const w = document.createElement("div");
+          w.className = "reply-wait";
+          w.textContent = "⏳ 선생님 답장을 기다리는 중이에요.";
+          body.appendChild(w);
+        }
+        item.append(n, body);
+        box.appendChild(item);
+      });
+    }
+
+    // NEW 표시는 학생이 메시지 칸을 한 번 클릭하면 읽음 처리
+    $("my-messages").addEventListener("click", () => {
+      const seen = loadJSON(SEEN_KEY, {});
+      Object.entries(myCache).forEach(([id, m]) => { if (m.repliedAt) seen[id] = m.repliedAt.getTime(); });
+      saveJSON(SEEN_KEY, seen);
+      renderMyMessages();
+    });
+
+    msgNum.addEventListener("change", renderMyMessages);
+    renderMyMessages();
+    watchMyMessages();
+
     // ---------- 선생님: 로그인 후 메시지 보기 ----------
     let currentDocs = [];
     let unsubscribe = null;
+
+    // ---------- 선생님: 답장 달기 ----------
+    const openEditors = new Set();   // 답장 입력 중인 메시지 (실시간 갱신 때 입력 내용 보존)
+    const draftReplies = {};
+
+    function buildTeacherReply(m) {
+      const wrap = document.createElement("div");
+      if (openEditors.has(m.id)) {
+        const editor = document.createElement("div");
+        editor.className = "reply-editor";
+        const ta = document.createElement("textarea");
+        ta.maxLength = 500;
+        ta.placeholder = m.num + "번 학생에게 보낼 답장을 적어 주세요.";
+        ta.value = draftReplies[m.id] ?? m.reply;
+        ta.addEventListener("input", () => { draftReplies[m.id] = ta.value; });
+        const actions = document.createElement("div");
+        actions.className = "reply-actions";
+        const send = document.createElement("button");
+        send.type = "button";
+        send.className = "btn btn-primary btn-sm";
+        send.textContent = "📨 답장 보내기";
+        send.onclick = async () => {
+          const val = ta.value.trim();
+          if (!val) { showToast("답장 내용을 적어 주세요.", "✏️"); ta.focus(); return; }
+          send.disabled = true;
+          try {
+            await updateDoc(doc(db, "messages", m.id), { reply: val.slice(0, 500), repliedAt: serverTimestamp() });
+            openEditors.delete(m.id);
+            delete draftReplies[m.id];
+            showToast(`${m.num}번 학생에게 답장을 보냈습니다.`, "✅");
+            renderInbox();
+          } catch (err) {
+            console.error(err);
+            showToast("답장을 보내지 못했습니다.", "⚠️");
+            send.disabled = false;
+          }
+        };
+        const cancel = document.createElement("button");
+        cancel.type = "button";
+        cancel.className = "btn btn-sm";
+        cancel.textContent = "취소";
+        cancel.onclick = () => { openEditors.delete(m.id); delete draftReplies[m.id]; renderInbox(); };
+        actions.append(send, cancel);
+        editor.append(ta, actions);
+        wrap.appendChild(editor);
+        return wrap;
+      }
+      if (m.reply) {
+        const box = document.createElement("div");
+        box.className = "reply-box";
+        const label = document.createElement("span");
+        label.className = "reply-label";
+        label.textContent = "↪ 보낸 답장 · " + formatTime(m.repliedAt);
+        box.append(label, document.createTextNode(m.reply));
+        wrap.appendChild(box);
+      }
+      const actions = document.createElement("div");
+      actions.className = "reply-actions";
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "btn btn-sm" + (m.reply ? "" : " btn-primary");
+      btn.textContent = m.reply ? "✏️ 답장 고치기" : "💬 답장하기";
+      btn.onclick = () => {
+        openEditors.add(m.id);
+        renderInbox();
+        const ta = document.querySelector(`[data-msg-id="${m.id}"] textarea`);
+        if (ta) ta.focus();
+      };
+      actions.appendChild(btn);
+      wrap.appendChild(actions);
+      return wrap;
+    }
 
     function renderInbox() {
       const box = $("inbox-list");
@@ -886,6 +1227,7 @@
       currentDocs.forEach(m => {
         const item = document.createElement("div");
         item.className = "inbox-item";
+        item.dataset.msgId = m.id;
         const num = document.createElement("div");
         num.className = "inbox-num";
         num.textContent = m.num;
@@ -898,6 +1240,7 @@
         time.className = "inbox-time";
         time.textContent = formatTime(m.createdAt);
         body.append(text, time);
+        body.appendChild(buildTeacherReply(m));
         const del = document.createElement("button");
         del.type = "button";
         del.className = "inbox-del";
@@ -927,7 +1270,12 @@
       unsubscribe = onSnapshot(q, snap => {
         currentDocs = snap.docs.map(d => {
           const data = d.data({ serverTimestamps: "estimate" });
-          return { id: d.id, num: data.num, text: data.text, createdAt: data.createdAt ? data.createdAt.toDate() : null };
+          return {
+            id: d.id, num: data.num, text: data.text,
+            createdAt: data.createdAt ? data.createdAt.toDate() : null,
+            reply: data.reply || "",
+            repliedAt: data.repliedAt ? data.repliedAt.toDate() : null
+          };
         });
         renderInbox();
       }, err => {
