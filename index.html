@@ -88,6 +88,11 @@
       gap: 16px;
     }
 
+    .feature-banner.installed {
+      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+      box-shadow: 0 10px 24px rgba(15, 118, 110, 0.25);
+    }
+
     @media (min-width: 768px) {
       .feature-banner {
         flex-direction: row;
@@ -683,15 +688,30 @@
     </header>
 
     <!-- Super Bookmarklet Banner -->
-    <div class="feature-banner">
+    <div class="feature-banner no-print" id="setup-banner">
       <div class="banner-text">
-        <h2>⭐ 1초 마법 북마크 (가장 쉬운 방법!)</h2>
+        <h2>💻 학생 컴퓨터 1회 설치 (이걸 해야 자동 로그인이 됩니다!)</h2>
         <p>
-          오른쪽 버튼을 마우스로 꾹 눌러 웹 브라우저 상단의 <strong>[북마크바(즐겨찾기)]</strong>로 끌어다 놓으세요!<br>
-          확장 프로그램이 없는 컴퓨터에서는 아래 번호 카드를 누른 뒤, 열린 엔트리 창에서 이 북마크만 누르면 바로 로그인됩니다.
+          컴퓨터마다 <strong>딱 한 번</strong>, 오른쪽 설치 파일을 받아 압축을 풀고 <strong>설치.bat</strong>을 더블클릭하세요.
+          크롬·웨일·엣지에 자동 로그인 프로그램이 저절로 설치됩니다. (약 30초, 설치 중 마우스·키보드 건드리지 않기)<br>
+          설치가 끝나면 번호 카드를 누르는 것만으로 아이디·비밀번호가 입력되고 로그인됩니다.
+          <span id="setup-status" style="display:block;margin-top:6px;font-weight:700;"></span>
         </p>
       </div>
-      <a class="bookmarklet-btn" id="bookmarklet-link" href="#" title="마우스로 끌어서 북마크바에 놓으세요!">
+      <a class="bookmarklet-btn" href="https://github.com/JUNGHYUNJU79/entry_login/raw/main/download/hawon6-autologin-setup.zip" download="하원초6_자동로그인_설치.zip" title="설치 파일 내려받기" style="cursor:pointer;">
+        <span>⬇️ 설치 파일 받기</span>
+      </a>
+    </div>
+
+    <div class="feature-banner" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 10px 24px rgba(37, 99, 235, 0.25);">
+      <div class="banner-text">
+        <h2>⭐ 설치가 어려운 컴퓨터라면: 1초 마법 북마크</h2>
+        <p>
+          오른쪽 버튼을 마우스로 꾹 눌러 웹 브라우저 상단의 <strong>[북마크바(즐겨찾기)]</strong>로 끌어다 놓으세요! (북마크바가 안 보이면 <code>Ctrl+Shift+B</code>)<br>
+          번호 카드를 눌러 열린 엔트리 창에서 이 북마크만 누르면 바로 로그인됩니다.
+        </p>
+      </div>
+      <a class="bookmarklet-btn" id="bookmarklet-link" href="#" title="마우스로 끌어서 북마크바에 놓으세요!" style="color:#1d4ed8;">
         <span>⭐ 하원초6 엔트리로그인</span>
       </a>
     </div>
@@ -721,19 +741,24 @@
       </h3>
       <div class="guide-steps">
         <div class="step-card">
-          <span class="step-num">방법 1</span>
-          <h4>마법 북마크(북마크릿) 활용</h4>
-          <p>상단의 초록색 <strong>[⭐ 하원초6 엔트리로그인]</strong> 버튼을 컴퓨터실 브라우저 북마크바에 등록해두면, 엔트리 로그인 화면에서 클릭 한 번으로 학생 번호창이 열려 즉시 로그인됩니다.</p>
+          <span class="step-num">왜 설치가 필요한가요?</span>
+          <h4>웹페이지는 다른 사이트 칸을 채울 수 없어요</h4>
+          <p>이 포털은 엔트리와 다른 사이트라서, 브라우저 보안 규칙상 엔트리 로그인 칸에 직접 글자를 넣을 수 없습니다. 그래서 각 컴퓨터의 브라우저에 <strong>작은 확장 프로그램</strong>을 한 번 설치해야 자동 입력이 됩니다.</p>
+        </div>
+        <div class="step-card">
+          <span class="step-num">방법 1 (추천)</span>
+          <h4>설치 파일로 자동 설치</h4>
+          <p>상단 <strong>[⬇️ 설치 파일 받기]</strong> → 압축 풀기 → <strong>설치.bat</strong> 더블클릭. "Windows의 PC 보호" 창이 뜨면 <strong>[추가 정보] → [실행]</strong>. 크롬·웨일·엣지 중 설치된 브라우저에 자동으로 들어갑니다. 설치 후 번호 카드만 누르면 끝입니다.</p>
         </div>
         <div class="step-card">
           <span class="step-num">방법 2</span>
-          <h4>본 포털 페이지 활용 (확장 프로그램과 연동)</h4>
-          <p>확장 프로그램이 설치된 PC에서는 학생이 번호 카드를 누르면 엔트리 로그인 창이 열리면서 <strong>아이디와 비밀번호가 자동으로 입력되고 바로 로그인</strong>됩니다. 확장 프로그램이 없는 PC에서는 아이디가 클립보드에 복사되므로 아이디 칸에 붙여넣기(<code>Ctrl+V</code>)하면 됩니다.</p>
+          <h4>마법 북마크 (설치 없이)</h4>
+          <p>파란색 <strong>[⭐ 하원초6 엔트리로그인]</strong> 버튼을 북마크바로 끌어다 놓습니다. 번호 카드를 눌러 열린 엔트리 창에서 북마크를 한 번 누르면 로그인됩니다. 엔트리에 바로 들어간 경우엔 1~15번 번호판이 뜹니다.</p>
         </div>
         <div class="step-card">
           <span class="step-num">방법 3</span>
-          <h4>크롬/웨일 확장 프로그램</h4>
-          <p>함께 제공된 <code>chrome_extension</code> 폴더를 브라우저 '확장 프로그램 관리'에 등록하시면, 엔트리 로그인 창에 1~15번 버튼이 항상 고정되어 더 간편합니다.</p>
+          <h4>직접 설치 (자동 설치가 안 될 때)</h4>
+          <p>주소창에 <code>chrome://extensions</code> 입력 → 오른쪽 위 <strong>[개발자 모드]</strong> 켜기 → <strong>[압축해제된 확장 프로그램을 로드합니다]</strong> → 설치 파일을 푼 폴더 안의 <code>chrome_extension</code> 폴더 선택.</p>
         </div>
       </div>
     </div>
@@ -838,6 +863,26 @@
       toast.classList.add("show");
       setTimeout(() => toast.classList.remove("show"), 3500);
     }
+
+    // ===== 이 컴퓨터에 확장 프로그램이 설치되어 있는지 확인 =====
+    // 확장 프로그램의 고정 ID (manifest.json의 key로 정해짐). 설치되어 있으면 ping.json을 읽을 수 있음.
+    const EXT_ID = "ikcphmcikjnbegibcfckdaomijdoghgb";
+    (async () => {
+      const el = document.getElementById("setup-status");
+      const banner = document.getElementById("setup-banner");
+      if (!el) return;
+      let installed = false;
+      try {
+        const r = await fetch(`chrome-extension://${EXT_ID}/ping.json`, { cache: "no-store" });
+        installed = r.ok;
+      } catch (e) { installed = false; }
+      if (installed) {
+        el.textContent = "✅ 이 컴퓨터에는 이미 설치되어 있어요. 아래에서 번호 카드만 누르면 자동 로그인됩니다!";
+        banner.classList.add("installed");
+      } else {
+        el.textContent = "❌ 이 컴퓨터에는 아직 설치되지 않았어요. 오른쪽 [설치 파일 받기]를 눌러 한 번만 설치해 주세요.";
+      }
+    })();
 
     const ENTRY_SIGNIN = "https://playentry.org/signin";
     const LAST_NUM_KEY = "hawon_last_num";

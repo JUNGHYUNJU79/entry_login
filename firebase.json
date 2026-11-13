@@ -8,7 +8,9 @@
       "**/node_modules/**",
       "chrome_extension/**",
       "*.md",
-      "firestore.rules"
+      "firestore.rules",
+      "download/**",
+      "installer/**"
     ],
     "headers": [
       {

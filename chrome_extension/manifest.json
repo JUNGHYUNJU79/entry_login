@@ -1,17 +1,37 @@
 {
   "manifest_version": 3,
   "name": "하원초 6학년 엔트리 자동 로그인",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "엔트리(playentry.org) 로그인 페이지에서 학생 번호를 클릭하거나, 포털에서 번호 카드를 눌러 들어오면 아이디/비밀번호가 자동으로 입력되어 로그인됩니다.",
   "content_scripts": [
     {
-      "matches": ["*://playentry.org/signin*", "*://www.playentry.org/signin*"],
-      "js": ["content.js"],
-      "css": ["content.css"],
+      "matches": [
+        "*://playentry.org/signin*",
+        "*://www.playentry.org/signin*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
       "run_at": "document_end"
     }
   ],
   "icons": {
     "128": "icon.png"
-  }
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsIQN8WR7Q4u7/blalWHL52B+nZl7PtK3xtxS97mKZF6Oh+AbQCULUDlGJGqUbOHhrf9amvIEdGyf7XKU7XJbR5UryshZUHmD5Kgr0D38KtqXhab2ofynYd9gluMS3//1C6ZfygHAg2zjmRk5NrGXIqoYsoH5Y4YgqtAWlsQy/NRR68XBsF2DGzBUCcdRd+kO8Yxkh+eqfMbRmDgGlLn+0GLfpB7O9iGjw74osvjiyyjEAsPrtTCTuEhIoBJjTaBxd3HVeiFCIkKjJ3EzYpHjPoHrZomHE3aBF2iwNA+S0RZ5hbxFWHIImuzKFSfQGg0ThdYET2f68nKsfJNZsnO9uQIDAQAB",
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "ping.json"
+      ],
+      "matches": [
+        "https://entry-login-portal-2a90ce.web.app/*",
+        "https://entry-login-portal-2a90ce.firebaseapp.com/*",
+        "file:///*"
+      ]
+    }
+  ]
 }
