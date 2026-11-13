@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>하원초등학교 6학년 엔트리 원클릭 로그인 포털</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+  <style>
+    :root {
+      --primary: #00c73c;
+      --primary-dark: #009e30;
+      --primary-light: #e8f9ed;
+      --text-main: #191f28;
+      --text-sub: #4e5968;
+      --text-muted: #8b95a1;
+      --bg-page: #f4f6f8;
+      --bg-card: #ffffff;
+      --border: #e5e8eb;
+      --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.08);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Malgun Gothic", sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding-bottom: 80px;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .school-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      border: 1px solid #b7f0c5;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: var(--text-sub);
+    }
+
+    /* Feature Banner / Bookmarklet Card */
+    .feature-banner {
+      background: linear-gradient(135deg, #00c73c 0%, #00a832 100%);
+      color: #ffffff;
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 32px;
+      box-shadow: 0 10px 24px rgba(0, 199, 60, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .feature-banner {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .banner-text h2 {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .banner-text p {
+      font-size: 14px;
+      opacity: 0.95;
+      line-height: 1.4;
+    }
+
+    .bookmarklet-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      color: #009e30;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 14px 24px;
+      border-radius: 12px;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s ease;
+      cursor: grab;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .bookmarklet-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .bookmarklet-btn:active {
+      cursor: grabbing;
+      transform: translateY(0);
+    }
+
+    /* Tabs & Actions */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tool-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-sub);
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: #f8fafc;
+      color: var(--text-main);
+      border-color: #cbd5e1;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      border-color: var(--primary-dark);
+      color: #ffffff;
+    }
+
+    /* Student Grid */
+    .student-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .student-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1.5px solid var(--border);
+      padding: 20px 16px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .student-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: #00c73c;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .student-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: #00c73c;
+    }
+
+    .student-card:hover::before {
+      opacity: 1;
+    }
+
+    .card-num {
+      width: 48px;
+      height: 48px;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-size: 20px;
+      font-weight: 800;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      border: 1.5px solid #b7f0c5;
+    }
+
+    .card-id {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+      font-family: monospace;
+      letter-spacing: 0.5px;
+    }
+
+    .card-pw {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .card-action {
+      margin-top: auto;
+      width: 100%;
+      background: #f8faf9;
+      color: #00a832;
+      border: 1px solid #c8ebd1;
+      border-radius: 8px;
+      padding: 8px 0;
+      font-size: 13px;
+      font-weight: 700;
+      transition: all 0.15s ease;
+    }
+
+    .student-card:hover .card-action {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    /* Guides Section */
+    .guide-section {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .guide-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .guide-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .step-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .step-num {
+      display: inline-block;
+      background: #00c73c;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+
+    .step-card h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .step-card p {
+      font-size: 13px;
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+
+    /* Message to Teacher */
+    .message-section {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 28px;
+      box-shadow: var(--shadow-sm);
+      margin-top: 24px;
+    }
+
+    .message-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .message-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .message-row label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+
+    .message-select {
+      font: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      color: var(--text-main);
+      min-width: 110px;
+    }
+
+    .message-textarea {
+      font: inherit;
+      font-size: 15px;
+      width: 100%;
+      min-height: 110px;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      resize: vertical;
+      line-height: 1.5;
+      color: var(--text-main);
+    }
+
+    .message-textarea:focus, .message-select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 199, 60, 0.15);
+    }
+
+    .message-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .message-hint {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .btn-lg {
+      padding: 12px 22px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .inbox {
+      margin-top: 20px;
+      border-top: 1px dashed var(--border);
+      padding-top: 16px;
+    }
+
+    .inbox summary {
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-sub);
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .inbox summary::-webkit-details-marker { display: none; }
+
+    .inbox-count {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid #b7f0c5;
+    }
+
+    .inbox-tools {
+      display: flex;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .inbox-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .inbox-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .inbox-num {
+      flex: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border: 1.5px solid #b7f0c5;
+      font-weight: 800;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .inbox-body { flex: 1; min-width: 0; }
+
+    .inbox-text {
+      font-size: 14px;
+      color: var(--text-main);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .inbox-time {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .inbox-del {
+      flex: none;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .inbox-del:hover { background: #fee2e2; color: #dc2626; }
+
+    .inbox-empty {
+      font-size: 13px;
+      color: var(--text-muted);
+      padding: 8px 0;
+    }
+
+    /* Modal / Toast */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #191f28;
+      color: #ffffff;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 9999;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Print Style */
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .feature-banner, .toolbar, .guide-section, .toast, .no-print {
+        display: none !important;
+      }
+      .container {
+        max-width: 100%;
+        padding: 0;
+      }
+      header {
+        margin-bottom: 16px;
+      }
+      .student-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        page-break-inside: avoid;
+      }
+      .student-card {
+        border: 2px dashed #999;
+        box-shadow: none;
+        padding: 12px;
+      }
+      .card-action {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="school-badge">
+        <span>🏫 하원초등학교</span>
+        <span>·</span>
+        <span>6학년 엔트리 전용</span>
+      </div>
+      <h1>엔트리 원클릭 자동 로그인 포털</h1>
+      <p class="subtitle">학생 여러분! 자기 번호를 클릭하면 엔트리 로그인 창이 열리고 아이디와 비밀번호가 자동으로 입력됩니다.</p>
+    </header>
+
+    <!-- Super Bookmarklet Banner -->
+    <div class="feature-banner">
+      <div class="banner-text">
+        <h2>⭐ 1초 마법 북마크 (가장 쉬운 방법!)</h2>
+        <p>
+          오른쪽 버튼을 마우스로 꾹 눌러 웹 브라우저 상단의 <strong>[북마크바(즐겨찾기)]</strong>로 끌어다 놓으세요!<br>
+          엔트리 로그인 창에서 이 북마크를 딱 누르면 번호판이 나타나 클릭 즉시 로그인됩니다.
+        </p>
+      </div>
+      <a class="bookmarklet-btn" id="bookmarklet-link" href="#" title="마우스로 끌어서 북마크바에 놓으세요!">
+        <span>⭐ 하원초6 엔트리로그인</span>
+      </a>
+    </div>
+
+    <!-- Student Cards Section -->
+    <div class="toolbar">
+      <h3 class="section-title">
+        <span>📋 학생 번호 선택</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted);">(총 15명)</span>
+      </h3>
+      <div class="tool-btns">
+        <button class="btn btn-primary" onclick="openEntryLogin()">
+          <span>🔗 엔트리 로그인 바로가기</span>
+        </button>
+        <button class="btn no-print" onclick="window.print()">
+          <span>🖨️ 명찰/라벨 인쇄</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="student-grid" id="student-grid"></div>
+
+    <!-- Teacher & PC Setup Guides -->
+    <div class="guide-section no-print">
+      <h3 class="guide-title">
+        <span>💡 컴퓨터실 및 수업 활용 팁 (선생님 안내)</span>
+      </h3>
+      <div class="guide-steps">
+        <div class="step-card">
+          <span class="step-num">방법 1</span>
+          <h4>마법 북마크(북마크릿) 활용</h4>
+          <p>상단의 초록색 <strong>[⭐ 하원초6 엔트리로그인]</strong> 버튼을 컴퓨터실 브라우저 북마크바에 등록해두면, 엔트리 로그인 화면에서 클릭 한 번으로 학생 번호창이 열려 즉시 로그인됩니다.</p>
+        </div>
+        <div class="step-card">
+          <span class="step-num">방법 2</span>
+          <h4>본 포털 페이지 활용 (확장 프로그램과 연동)</h4>
+          <p>확장 프로그램이 설치된 PC에서는 학생이 번호 카드를 누르면 엔트리 로그인 창이 열리면서 <strong>아이디와 비밀번호가 자동으로 입력되고 바로 로그인</strong>됩니다. 확장 프로그램이 없는 PC에서는 아이디가 클립보드에 복사되므로 아이디 칸에 붙여넣기(<code>Ctrl+V</code>)하면 됩니다.</p>
+        </div>
+        <div class="step-card">
+          <span class="step-num">방법 3</span>
+          <h4>크롬/웨일 확장 프로그램</h4>
+          <p>함께 제공된 <code>chrome_extension</code> 폴더를 브라우저 '확장 프로그램 관리'에 등록하시면, 엔트리 로그인 창에 1~15번 버튼이 항상 고정되어 더 간편합니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message to Teacher -->
+    <div class="message-section no-print" id="message-section">
+      <h3 class="guide-title">
+        <span>💌 선생님께 메시지 보내기</span>
+      </h3>
+      <form class="message-form" id="message-form" autocomplete="off">
+        <div class="message-row">
+          <label for="msg-num">내 번호</label>
+          <select class="message-select" id="msg-num" required></select>
+          <span class="message-hint">로그인이 안 되거나 궁금한 점이 있으면 적어서 보내세요.</span>
+        </div>
+        <textarea class="message-textarea" id="msg-text" maxlength="500" placeholder="예) 3번인데 로그인이 안 돼요. / 작품 저장이 안 돼요." required></textarea>
+        <div class="message-actions">
+          <span class="message-hint" id="msg-counter">0 / 500</span>
+          <button type="submit" class="btn btn-primary btn-lg">
+            <span>📨 보내기</span>
+          </button>
+        </div>
+      </form>
+
+      <details class="inbox" id="inbox">
+        <summary>
+          <span>📬 받은 메시지 (선생님용)</span>
+          <span class="inbox-count" id="inbox-count">0</span>
+          <span class="message-hint">· 이 컴퓨터에서 보낸 메시지가 여기에 쌓입니다</span>
+        </summary>
+        <div class="inbox-tools">
+          <button type="button" class="btn" onclick="copyInbox()">📋 모두 복사</button>
+          <button type="button" class="btn" onclick="clearInbox()">🗑️ 모두 지우기</button>
+        </div>
+        <div class="inbox-list" id="inbox-list"></div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <span id="toast-icon">📋</span>
+    <span id="toast-msg">복사되었습니다!</span>
+  </div>
+
+  <script>
+    const STUDENTS = [
+      { num: 1, id: "wol0161008", pw: "a1234567" },
+      { num: 2, id: "wol0298243", pw: "a1234567" },
+      { num: 3, id: "wol0311539", pw: "a1234567" },
+      { num: 4, id: "wol0419179", pw: "a1234567" },
+      { num: 5, id: "wol0526983", pw: "a1234567" },
+      { num: 6, id: "wol0627207", pw: "a1234567" },
+      { num: 7, id: "wol078147", pw: "a1234567" },
+      { num: 8, id: "wol0885499", pw: "a1234567" },
+      { num: 9, id: "wol0986416", pw: "a1234567" },
+      { num: 10, id: "wol1026316", pw: "a1234567" },
+      { num: 11, id: "wol1111588", pw: "a1234567" },
+      { num: 12, id: "wol1247264", pw: "a1234567" },
+      { num: 13, id: "wol1379178", pw: "a1234567" },
+      { num: 14, id: "wol1452218", pw: "a1234567" },
+      { num: 15, id: "wol1575234", pw: "a1234567" }
+    ];
+
+    // Render Student Cards
+    const grid = document.getElementById("student-grid");
+    STUDENTS.forEach(student => {
+      const card = document.createElement("div");
+      card.className = "student-card";
+      card.innerHTML = `
+        <div class="card-num">${student.num}</div>
+        <div class="card-id">${student.id}</div>
+        <div class="card-pw">암호: ${student.pw}</div>
+        <button class="card-action">클릭하여 로그인 이동</button>
+      `;
+      card.onclick = () => selectStudent(student);
+      grid.appendChild(card);
+    });
+
+    function showToast(msg, icon = "✅") {
+      const toast = document.getElementById("toast");
+      const toastMsg = document.getElementById("toast-msg");
+      const toastIcon = document.getElementById("toast-icon");
+      toastMsg.textContent = msg;
+      toastIcon.textContent = icon;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3500);
+    }
+
+    const ENTRY_SIGNIN = "https://playentry.org/signin";
+    const LAST_NUM_KEY = "hawon_last_num";
+
+    // 엔트리 로그인 주소에 학생 번호를 실어 보냄 (?hawon=번호)
+    // → 확장 프로그램이 이 번호를 읽어 아이디/비밀번호를 즉시 채워 넣고 로그인합니다.
+    function entryUrlFor(student) {
+      return ENTRY_SIGNIN + "?hawon=" + student.num;
+    }
+
+    function selectStudent(student) {
+      try { localStorage.setItem(LAST_NUM_KEY, String(student.num)); } catch (e) {}
+
+      // 확장 프로그램이 없는 PC를 위한 보조: 아이디를 클립보드에도 복사해 둠
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(student.id).catch(() => {});
+      }
+
+      showToast(`[${student.num}번] 엔트리로 이동합니다. 아이디/비밀번호가 자동으로 입력됩니다!`, "🚀");
+
+      // 0.4초 후 엔트리 로그인 창 새 탭으로 열기
+      setTimeout(() => {
+        window.open(entryUrlFor(student), "_blank");
+      }, 400);
+    }
+
+    // 상단 [엔트리 로그인 바로가기]: 마지막으로 눌렀던 번호가 있으면 그 번호로 자동 입력
+    function openEntryLogin() {
+      let last = null;
+      try { last = parseInt(localStorage.getItem(LAST_NUM_KEY), 10); } catch (e) {}
+      const student = STUDENTS.find(s => s.num === last);
+      if (student) {
+        showToast(`[${student.num}번] 계정으로 엔트리 로그인 창을 엽니다.`, "🚀");
+        window.open(entryUrlFor(student), "_blank");
+      } else {
+        showToast("엔트리 로그인 창을 엽니다. 번호판에서 자기 번호를 누르세요.", "🔗");
+        window.open(ENTRY_SIGNIN, "_blank");
+      }
+    }
+
+    // ===== 선생님께 메시지 보내기 =====
+    // 선생님 이메일을 적어 두면 [보내기]를 눌렀을 때 메일 앱도 함께 열립니다. (비워 두면 이 컴퓨터에만 저장)
+    const TEACHER_EMAIL = "";
+    const INBOX_KEY = "hawon_teacher_inbox";
+
+    const msgNum = document.getElementById("msg-num");
+    const msgText = document.getElementById("msg-text");
+    const msgCounter = document.getElementById("msg-counter");
+
+    STUDENTS.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s.num;
+      opt.textContent = s.num + "번";
+      msgNum.appendChild(opt);
+    });
+    try {
+      const last = parseInt(localStorage.getItem(LAST_NUM_KEY), 10);
+      if (STUDENTS.some(s => s.num === last)) msgNum.value = last;
+    } catch (e) {}
+
+    msgText.addEventListener("input", () => {
+      msgCounter.textContent = msgText.value.length + " / 500";
+    });
+
+    function loadInbox() {
+      try { return JSON.parse(localStorage.getItem(INBOX_KEY) || "[]"); } catch (e) { return []; }
+    }
+    function saveInbox(list) {
+      try { localStorage.setItem(INBOX_KEY, JSON.stringify(list)); } catch (e) {}
+    }
+    function formatTime(ts) {
+      const d = new Date(ts);
+      const p = n => String(n).padStart(2, "0");
+      return `${d.getMonth() + 1}/${d.getDate()} ${p(d.getHours())}:${p(d.getMinutes())}`;
+    }
+
+    function renderInbox() {
+      const list = loadInbox();
+      const box = document.getElementById("inbox-list");
+      document.getElementById("inbox-count").textContent = list.length;
+      box.innerHTML = "";
+      if (list.length === 0) {
+        box.innerHTML = '<div class="inbox-empty">아직 받은 메시지가 없습니다.</div>';
+        return;
+      }
+      list.slice().reverse().forEach(m => {
+        const item = document.createElement("div");
+        item.className = "inbox-item";
+        const num = document.createElement("div");
+        num.className = "inbox-num";
+        num.textContent = m.num;
+        const body = document.createElement("div");
+        body.className = "inbox-body";
+        const text = document.createElement("div");
+        text.className = "inbox-text";
+        text.textContent = m.text;
+        const time = document.createElement("div");
+        time.className = "inbox-time";
+        time.textContent = formatTime(m.ts);
+        body.appendChild(text);
+        body.appendChild(time);
+        const del = document.createElement("button");
+        del.type = "button";
+        del.className = "inbox-del";
+        del.title = "이 메시지 지우기";
+        del.textContent = "✕";
+        del.onclick = () => {
+          saveInbox(loadInbox().filter(x => x.ts !== m.ts));
+          renderInbox();
+        };
+        item.appendChild(num);
+        item.appendChild(body);
+        item.appendChild(del);
+        box.appendChild(item);
+      });
+    }
+
+    document.getElementById("message-form").addEventListener("submit", e => {
+      e.preventDefault();
+      const num = parseInt(msgNum.value, 10);
+      const text = msgText.value.trim();
+      if (!text) {
+        showToast("메시지 내용을 적어 주세요.", "✏️");
+        msgText.focus();
+        return;
+      }
+      const list = loadInbox();
+      list.push({ num, text, ts: Date.now() });
+      saveInbox(list);
+      renderInbox();
+
+      if (TEACHER_EMAIL) {
+        const subject = encodeURIComponent(`[하원초6 엔트리] ${num}번 학생 메시지`);
+        const body = encodeURIComponent(`${num}번 학생이 보낸 메시지입니다.\n\n${text}\n\n(${formatTime(Date.now())})`);
+        window.location.href = `mailto:${TEACHER_EMAIL}?subject=${subject}&body=${body}`;
+      }
+
+      msgText.value = "";
+      msgCounter.textContent = "0 / 500";
+      showToast(`[${num}번] 메시지를 보냈어요! 선생님이 확인할게요.`, "💌");
+    });
+
+    function copyInbox() {
+      const list = loadInbox();
+      if (list.length === 0) { showToast("복사할 메시지가 없습니다.", "📭"); return; }
+      const lines = list.map(m => `[${m.num}번 · ${formatTime(m.ts)}] ${m.text}`).join("\n");
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(lines)
+          .then(() => showToast(`메시지 ${list.length}개를 복사했습니다.`, "📋"))
+          .catch(() => showToast("복사에 실패했습니다.", "⚠️"));
+      } else {
+        showToast("이 브라우저에서는 복사를 지원하지 않습니다.", "⚠️");
+      }
+    }
+
+    function clearInbox() {
+      const list = loadInbox();
+      if (list.length === 0) { showToast("지울 메시지가 없습니다.", "📭"); return; }
+      if (!confirm(`받은 메시지 ${list.length}개를 모두 지울까요?`)) return;
+      saveInbox([]);
+      renderInbox();
+      showToast("받은 메시지를 모두 지웠습니다.", "🗑️");
+    }
+
+    renderInbox();
+
+    // Build Bookmarklet Code
+    const bookmarkletScript = `javascript:(function(){const s=[{n:1,i:"wol0161008",p:"a1234567"},{n:2,i:"wol0298243",p:"a1234567"},{n:3,i:"wol0311539",p:"a1234567"},{n:4,i:"wol0419179",p:"a1234567"},{n:5,i:"wol0526983",p:"a1234567"},{n:6,i:"wol0627207",p:"a1234567"},{n:7,i:"wol078147",p:"a1234567"},{n:8,i:"wol0885499",p:"a1234567"},{n:9,i:"wol0986416",p:"a1234567"},{n:10,i:"wol1026316",p:"a1234567"},{n:11,i:"wol1111588",p:"a1234567"},{n:12,i:"wol1247264",p:"a1234567"},{n:13,i:"wol1379178",p:"a1234567"},{n:14,i:"wol1452218",p:"a1234567"},{n:15,i:"wol1575234",p:"a1234567"}];if(!location.href.includes("playentry.org/signin")){if(confirm("엔트리 로그인 페이지로 이동할까요?")){location.href="https://playentry.org/signin";}return;}let p=document.getElementById("hw-panel");if(p){p.remove();}p=document.createElement("div");p.id="hw-panel";p.style="position:fixed;top:40px;left:50%;transform:translateX(-50%);z-index:999999;background:#fff;border:3px solid #00c73c;border-radius:18px;padding:24px;box-shadow:0 12px 36px rgba(0,0,0,0.35);text-align:center;width:420px;font-family:sans-serif;";p.innerHTML='<div style="font-size:18px;font-weight:bold;margin-bottom:12px;color:#111;">🏫 하원초 6학년 내 번호 클릭!</div><div id="hw-g" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;"></div><button id="hw-c" style="margin-top:14px;border:none;background:#eee;padding:7px 18px;border-radius:8px;cursor:pointer;font-weight:bold;">닫기</button>';document.body.appendChild(p);document.getElementById("hw-c").onclick=()=>p.remove();const g=document.getElementById("hw-g");s.forEach(st=>{const b=document.createElement("button");b.innerText=st.n+"번";b.style="padding:10px 4px;font-weight:bold;font-size:15px;border:1.5px solid #00c73c;border-radius:8px;background:#f0fff4;cursor:pointer;color:#008528;";b.onclick=()=>{const u=document.getElementById("username"),pw=document.getElementById("password");if(!u||!pw){alert("로그인 입력창을 찾을 수 없습니다.");return;}const setV=(el,val)=>{const set=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,"value").set;if(set){set.call(el,val);}else{el.value=val;}el.dispatchEvent(new Event("input",{bubbles:true}));el.dispatchEvent(new Event("change",{bubbles:true}));};setV(u,st.i);setV(pw,st.p);setTimeout(()=>{const btn=document.querySelector(\\'[data-testid="signin"]\\')||document.querySelector(".entry_btn button")||document.querySelector(".entry_btn");if(btn){btn.click();p.remove();}else{alert("로그인 버튼을 눌러주세요.");}},150);};g.appendChild(b);});})();`;
+
+    document.getElementById("bookmarklet-link").href = bookmarkletScript;
+  </script>
+</body>
+</html>

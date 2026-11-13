@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "하원초 6학년 엔트리 자동 로그인",
+  "version": "1.1.0",
+  "description": "엔트리(playentry.org) 로그인 페이지에서 학생 번호를 클릭하거나, 포털에서 번호 카드를 눌러 들어오면 아이디/비밀번호가 자동으로 입력되어 로그인됩니다.",
+  "content_scripts": [
+    {
+      "matches": ["*://playentry.org/signin*", "*://www.playentry.org/signin*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "icons": {
+    "128": "icon.png"
+  }
+}
