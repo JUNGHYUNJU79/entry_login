@@ -1,0 +1,33 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 선생님 계정으로 로그인한 경우에만 true
+    function isTeacher() {
+      return request.auth != null
+        && request.auth.token.email == 'teacher@entry-login-portal-2a90ce.firebaseapp.com';
+    }
+
+    // 학생 메시지: 누구나 "쓰기"만 가능, 읽기/삭제는 선생님만
+    match /messages/{messageId} {
+      allow create: if request.resource.data.keys().hasOnly(['num', 'text', 'createdAt'])
+        && request.resource.data.keys().hasAll(['num', 'text', 'createdAt'])
+        && request.resource.data.num is int
+        && request.resource.data.num >= 1
+        && request.resource.data.num <= 15
+        && request.resource.data.text is string
+        && request.resource.data.text.size() >= 1
+        && request.resource.data.text.size() <= 500
+        && request.resource.data.createdAt == request.time;
+
+      allow read, delete: if isTeacher();
+      allow update: if false;
+    }
+
+    // 그 밖의 모든 경로는 차단
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

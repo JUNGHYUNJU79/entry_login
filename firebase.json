@@ -7,13 +7,22 @@
       "**/.*",
       "**/node_modules/**",
       "chrome_extension/**",
-      "*.md"
+      "*.md",
+      "firestore.rules"
     ],
     "headers": [
       {
         "source": "**/*.html",
-        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
       }
     ]
+  },
+  "firestore": {
+    "rules": "firestore.rules"
   }
 }

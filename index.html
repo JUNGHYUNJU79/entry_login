@@ -345,6 +345,8 @@
       line-height: 1.5;
     }
 
+    [hidden] { display: none !important; }
+
     /* Message to Teacher */
     .message-section {
       background: var(--bg-card);
@@ -672,15 +674,26 @@
 
       <details class="inbox" id="inbox">
         <summary>
-          <span>📬 받은 메시지 (선생님용)</span>
-          <span class="inbox-count" id="inbox-count">0</span>
-          <span class="message-hint">· 이 컴퓨터에서 보낸 메시지가 여기에 쌓입니다</span>
+          <span>🔒 선생님 메시지함</span>
+          <span class="inbox-count" id="inbox-count">-</span>
+          <span class="message-hint">· 선생님 비밀번호를 입력하면 모든 컴퓨터에서 보낸 메시지를 볼 수 있습니다</span>
         </summary>
-        <div class="inbox-tools">
-          <button type="button" class="btn" onclick="copyInbox()">📋 모두 복사</button>
-          <button type="button" class="btn" onclick="clearInbox()">🗑️ 모두 지우기</button>
+
+        <form class="message-row" id="teacher-login" style="margin-top:12px;" autocomplete="off">
+          <input type="password" class="message-select" id="teacher-pw" placeholder="선생님 비밀번호" autocomplete="current-password" style="min-width:220px;" required>
+          <button type="submit" class="btn btn-primary">🔓 메시지 보기</button>
+          <span class="message-hint" id="teacher-login-msg"></span>
+        </form>
+
+        <div id="teacher-panel" hidden>
+          <div class="inbox-tools">
+            <button type="button" class="btn" id="btn-copy">📋 모두 복사</button>
+            <button type="button" class="btn" id="btn-clear">🗑️ 모두 지우기</button>
+            <button type="button" class="btn" id="btn-change-pw">🔑 비밀번호 변경</button>
+            <button type="button" class="btn" id="btn-logout">🚪 잠그기</button>
+          </div>
+          <div class="inbox-list" id="inbox-list"></div>
         </div>
-        <div class="inbox-list" id="inbox-list"></div>
       </details>
     </div>
   </div>
@@ -774,15 +787,45 @@
       }
     }
 
-    // ===== 선생님께 메시지 보내기 =====
-    // 선생님 이메일을 적어 두면 [보내기]를 눌렀을 때 메일 앱도 함께 열립니다. (비워 두면 이 컴퓨터에만 저장)
-    const TEACHER_EMAIL = "";
-    const INBOX_KEY = "hawon_teacher_inbox";
+    // Build Bookmarklet Code
+    const bookmarkletScript = `javascript:(function(){const s=[{n:1,i:"wol0161008",p:"a1234567"},{n:2,i:"wol0298243",p:"a1234567"},{n:3,i:"wol0311539",p:"a1234567"},{n:4,i:"wol0419179",p:"a1234567"},{n:5,i:"wol0526983",p:"a1234567"},{n:6,i:"wol0627207",p:"a1234567"},{n:7,i:"wol078147",p:"a1234567"},{n:8,i:"wol0885499",p:"a1234567"},{n:9,i:"wol0986416",p:"a1234567"},{n:10,i:"wol1026316",p:"a1234567"},{n:11,i:"wol1111588",p:"a1234567"},{n:12,i:"wol1247264",p:"a1234567"},{n:13,i:"wol1379178",p:"a1234567"},{n:14,i:"wol1452218",p:"a1234567"},{n:15,i:"wol1575234",p:"a1234567"}];if(!location.href.includes("playentry.org/signin")){if(confirm("엔트리 로그인 페이지로 이동할까요?")){location.href="https://playentry.org/signin";}return;}let p=document.getElementById("hw-panel");if(p){p.remove();}p=document.createElement("div");p.id="hw-panel";p.style="position:fixed;top:40px;left:50%;transform:translateX(-50%);z-index:999999;background:#fff;border:3px solid #00c73c;border-radius:18px;padding:24px;box-shadow:0 12px 36px rgba(0,0,0,0.35);text-align:center;width:420px;font-family:sans-serif;";p.innerHTML='<div style="font-size:18px;font-weight:bold;margin-bottom:12px;color:#111;">🏫 하원초 6학년 내 번호 클릭!</div><div id="hw-g" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;"></div><button id="hw-c" style="margin-top:14px;border:none;background:#eee;padding:7px 18px;border-radius:8px;cursor:pointer;font-weight:bold;">닫기</button>';document.body.appendChild(p);document.getElementById("hw-c").onclick=()=>p.remove();const g=document.getElementById("hw-g");s.forEach(st=>{const b=document.createElement("button");b.innerText=st.n+"번";b.style="padding:10px 4px;font-weight:bold;font-size:15px;border:1.5px solid #00c73c;border-radius:8px;background:#f0fff4;cursor:pointer;color:#008528;";b.onclick=()=>{const u=document.getElementById("username"),pw=document.getElementById("password");if(!u||!pw){alert("로그인 입력창을 찾을 수 없습니다.");return;}const setV=(el,val)=>{const set=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,"value").set;if(set){set.call(el,val);}else{el.value=val;}el.dispatchEvent(new Event("input",{bubbles:true}));el.dispatchEvent(new Event("change",{bubbles:true}));};setV(u,st.i);setV(pw,st.p);setTimeout(()=>{const btn=document.querySelector(\\'[data-testid="signin"]\\')||document.querySelector(".entry_btn button")||document.querySelector(".entry_btn");if(btn){btn.click();p.remove();}else{alert("로그인 버튼을 눌러주세요.");}},150);};g.appendChild(b);});})();`;
 
-    const msgNum = document.getElementById("msg-num");
-    const msgText = document.getElementById("msg-text");
-    const msgCounter = document.getElementById("msg-counter");
+    document.getElementById("bookmarklet-link").href = bookmarkletScript;
+  </script>
 
+  <!-- ===== 선생님께 메시지 보내기 (Firebase Firestore + 선생님 로그인) ===== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import {
+      getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot,
+      deleteDoc, doc, getDocs, writeBatch
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+    import {
+      getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
+      updatePassword, EmailAuthProvider, reauthenticateWithCredential
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB1-48bVAwVPdfuN-hJ_g_nT_AQMF_elLM",
+      authDomain: "entry-login-portal-2a90ce.firebaseapp.com",
+      projectId: "entry-login-portal-2a90ce",
+      storageBucket: "entry-login-portal-2a90ce.firebasestorage.app",
+      messagingSenderId: "389754842228",
+      appId: "1:389754842228:web:1f23896dacd66c17f1f521"
+    };
+    // 선생님 로그인용 고정 계정 (비밀번호만 입력하면 됨)
+    const TEACHER_EMAIL = "teacher@entry-login-portal-2a90ce.firebaseapp.com";
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const messagesCol = collection(db, "messages");
+
+    const $ = id => document.getElementById(id);
+    const msgNum = $("msg-num"), msgText = $("msg-text"), msgCounter = $("msg-counter");
+    const sendBtn = $("message-form").querySelector('button[type="submit"]');
+
+    // 번호 선택 상자 채우기
     STUDENTS.forEach(s => {
       const opt = document.createElement("option");
       opt.value = s.num;
@@ -798,28 +841,49 @@
       msgCounter.textContent = msgText.value.length + " / 500";
     });
 
-    function loadInbox() {
-      try { return JSON.parse(localStorage.getItem(INBOX_KEY) || "[]"); } catch (e) { return []; }
-    }
-    function saveInbox(list) {
-      try { localStorage.setItem(INBOX_KEY, JSON.stringify(list)); } catch (e) {}
-    }
-    function formatTime(ts) {
-      const d = new Date(ts);
+    function formatTime(d) {
+      if (!d) return "방금";
       const p = n => String(n).padStart(2, "0");
       return `${d.getMonth() + 1}/${d.getDate()} ${p(d.getHours())}:${p(d.getMinutes())}`;
     }
 
+    // ---------- 학생: 메시지 보내기 ----------
+    $("message-form").addEventListener("submit", async e => {
+      e.preventDefault();
+      const num = parseInt(msgNum.value, 10);
+      const text = msgText.value.trim();
+      if (!text) {
+        showToast("메시지 내용을 적어 주세요.", "✏️");
+        msgText.focus();
+        return;
+      }
+      sendBtn.disabled = true;
+      try {
+        await addDoc(messagesCol, { num, text: text.slice(0, 500), createdAt: serverTimestamp() });
+        msgText.value = "";
+        msgCounter.textContent = "0 / 500";
+        showToast(`[${num}번] 메시지를 보냈어요! 선생님이 확인할게요.`, "💌");
+      } catch (err) {
+        console.error(err);
+        showToast("메시지를 보내지 못했어요. 인터넷 연결을 확인해 주세요.", "⚠️");
+      } finally {
+        sendBtn.disabled = false;
+      }
+    });
+
+    // ---------- 선생님: 로그인 후 메시지 보기 ----------
+    let currentDocs = [];
+    let unsubscribe = null;
+
     function renderInbox() {
-      const list = loadInbox();
-      const box = document.getElementById("inbox-list");
-      document.getElementById("inbox-count").textContent = list.length;
+      const box = $("inbox-list");
+      $("inbox-count").textContent = currentDocs.length;
       box.innerHTML = "";
-      if (list.length === 0) {
+      if (currentDocs.length === 0) {
         box.innerHTML = '<div class="inbox-empty">아직 받은 메시지가 없습니다.</div>';
         return;
       }
-      list.slice().reverse().forEach(m => {
+      currentDocs.forEach(m => {
         const item = document.createElement("div");
         item.className = "inbox-item";
         const num = document.createElement("div");
@@ -832,78 +896,111 @@
         text.textContent = m.text;
         const time = document.createElement("div");
         time.className = "inbox-time";
-        time.textContent = formatTime(m.ts);
-        body.appendChild(text);
-        body.appendChild(time);
+        time.textContent = formatTime(m.createdAt);
+        body.append(text, time);
         const del = document.createElement("button");
         del.type = "button";
         del.className = "inbox-del";
         del.title = "이 메시지 지우기";
         del.textContent = "✕";
-        del.onclick = () => {
-          saveInbox(loadInbox().filter(x => x.ts !== m.ts));
-          renderInbox();
+        del.onclick = async () => {
+          try { await deleteDoc(doc(db, "messages", m.id)); }
+          catch (err) { showToast("삭제하지 못했습니다.", "⚠️"); }
         };
-        item.appendChild(num);
-        item.appendChild(body);
-        item.appendChild(del);
+        item.append(num, body, del);
         box.appendChild(item);
       });
     }
 
-    document.getElementById("message-form").addEventListener("submit", e => {
-      e.preventDefault();
-      const num = parseInt(msgNum.value, 10);
-      const text = msgText.value.trim();
-      if (!text) {
-        showToast("메시지 내용을 적어 주세요.", "✏️");
-        msgText.focus();
+    onAuthStateChanged(auth, user => {
+      const isTeacher = !!user && user.email === TEACHER_EMAIL;
+      $("teacher-login").hidden = isTeacher;
+      $("teacher-panel").hidden = !isTeacher;
+      if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+      if (!isTeacher) {
+        currentDocs = [];
+        $("inbox-count").textContent = "-";
         return;
       }
-      const list = loadInbox();
-      list.push({ num, text, ts: Date.now() });
-      saveInbox(list);
-      renderInbox();
-
-      if (TEACHER_EMAIL) {
-        const subject = encodeURIComponent(`[하원초6 엔트리] ${num}번 학생 메시지`);
-        const body = encodeURIComponent(`${num}번 학생이 보낸 메시지입니다.\n\n${text}\n\n(${formatTime(Date.now())})`);
-        window.location.href = `mailto:${TEACHER_EMAIL}?subject=${subject}&body=${body}`;
-      }
-
-      msgText.value = "";
-      msgCounter.textContent = "0 / 500";
-      showToast(`[${num}번] 메시지를 보냈어요! 선생님이 확인할게요.`, "💌");
+      $("inbox").open = true;
+      const q = query(messagesCol, orderBy("createdAt", "desc"));
+      unsubscribe = onSnapshot(q, snap => {
+        currentDocs = snap.docs.map(d => {
+          const data = d.data({ serverTimestamps: "estimate" });
+          return { id: d.id, num: data.num, text: data.text, createdAt: data.createdAt ? data.createdAt.toDate() : null };
+        });
+        renderInbox();
+      }, err => {
+        console.error(err);
+        showToast("메시지를 불러오지 못했습니다.", "⚠️");
+      });
     });
 
-    function copyInbox() {
-      const list = loadInbox();
-      if (list.length === 0) { showToast("복사할 메시지가 없습니다.", "📭"); return; }
-      const lines = list.map(m => `[${m.num}번 · ${formatTime(m.ts)}] ${m.text}`).join("\n");
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(lines)
-          .then(() => showToast(`메시지 ${list.length}개를 복사했습니다.`, "📋"))
-          .catch(() => showToast("복사에 실패했습니다.", "⚠️"));
-      } else {
-        showToast("이 브라우저에서는 복사를 지원하지 않습니다.", "⚠️");
+    $("teacher-login").addEventListener("submit", async e => {
+      e.preventDefault();
+      const pw = $("teacher-pw").value;
+      $("teacher-login-msg").textContent = "확인 중...";
+      try {
+        await signInWithEmailAndPassword(auth, TEACHER_EMAIL, pw);
+        $("teacher-pw").value = "";
+        $("teacher-login-msg").textContent = "";
+        showToast("선생님 메시지함을 열었습니다.", "🔓");
+      } catch (err) {
+        console.error(err);
+        const tooMany = err && err.code === "auth/too-many-requests";
+        $("teacher-login-msg").textContent = tooMany
+          ? "시도가 너무 많아요. 잠시 후 다시 해 주세요."
+          : "비밀번호가 맞지 않습니다.";
       }
-    }
+    });
 
-    function clearInbox() {
-      const list = loadInbox();
-      if (list.length === 0) { showToast("지울 메시지가 없습니다.", "📭"); return; }
-      if (!confirm(`받은 메시지 ${list.length}개를 모두 지울까요?`)) return;
-      saveInbox([]);
-      renderInbox();
-      showToast("받은 메시지를 모두 지웠습니다.", "🗑️");
-    }
+    $("btn-logout").addEventListener("click", async () => {
+      await signOut(auth);
+      showToast("선생님 메시지함을 잠갔습니다.", "🔒");
+    });
 
-    renderInbox();
+    $("btn-copy").addEventListener("click", () => {
+      if (currentDocs.length === 0) { showToast("복사할 메시지가 없습니다.", "📭"); return; }
+      const lines = currentDocs.map(m => `[${m.num}번 · ${formatTime(m.createdAt)}] ${m.text}`).join("\n");
+      navigator.clipboard.writeText(lines)
+        .then(() => showToast(`메시지 ${currentDocs.length}개를 복사했습니다.`, "📋"))
+        .catch(() => showToast("복사에 실패했습니다.", "⚠️"));
+    });
 
-    // Build Bookmarklet Code
-    const bookmarkletScript = `javascript:(function(){const s=[{n:1,i:"wol0161008",p:"a1234567"},{n:2,i:"wol0298243",p:"a1234567"},{n:3,i:"wol0311539",p:"a1234567"},{n:4,i:"wol0419179",p:"a1234567"},{n:5,i:"wol0526983",p:"a1234567"},{n:6,i:"wol0627207",p:"a1234567"},{n:7,i:"wol078147",p:"a1234567"},{n:8,i:"wol0885499",p:"a1234567"},{n:9,i:"wol0986416",p:"a1234567"},{n:10,i:"wol1026316",p:"a1234567"},{n:11,i:"wol1111588",p:"a1234567"},{n:12,i:"wol1247264",p:"a1234567"},{n:13,i:"wol1379178",p:"a1234567"},{n:14,i:"wol1452218",p:"a1234567"},{n:15,i:"wol1575234",p:"a1234567"}];if(!location.href.includes("playentry.org/signin")){if(confirm("엔트리 로그인 페이지로 이동할까요?")){location.href="https://playentry.org/signin";}return;}let p=document.getElementById("hw-panel");if(p){p.remove();}p=document.createElement("div");p.id="hw-panel";p.style="position:fixed;top:40px;left:50%;transform:translateX(-50%);z-index:999999;background:#fff;border:3px solid #00c73c;border-radius:18px;padding:24px;box-shadow:0 12px 36px rgba(0,0,0,0.35);text-align:center;width:420px;font-family:sans-serif;";p.innerHTML='<div style="font-size:18px;font-weight:bold;margin-bottom:12px;color:#111;">🏫 하원초 6학년 내 번호 클릭!</div><div id="hw-g" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;"></div><button id="hw-c" style="margin-top:14px;border:none;background:#eee;padding:7px 18px;border-radius:8px;cursor:pointer;font-weight:bold;">닫기</button>';document.body.appendChild(p);document.getElementById("hw-c").onclick=()=>p.remove();const g=document.getElementById("hw-g");s.forEach(st=>{const b=document.createElement("button");b.innerText=st.n+"번";b.style="padding:10px 4px;font-weight:bold;font-size:15px;border:1.5px solid #00c73c;border-radius:8px;background:#f0fff4;cursor:pointer;color:#008528;";b.onclick=()=>{const u=document.getElementById("username"),pw=document.getElementById("password");if(!u||!pw){alert("로그인 입력창을 찾을 수 없습니다.");return;}const setV=(el,val)=>{const set=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,"value").set;if(set){set.call(el,val);}else{el.value=val;}el.dispatchEvent(new Event("input",{bubbles:true}));el.dispatchEvent(new Event("change",{bubbles:true}));};setV(u,st.i);setV(pw,st.p);setTimeout(()=>{const btn=document.querySelector(\\'[data-testid="signin"]\\')||document.querySelector(".entry_btn button")||document.querySelector(".entry_btn");if(btn){btn.click();p.remove();}else{alert("로그인 버튼을 눌러주세요.");}},150);};g.appendChild(b);});})();`;
+    $("btn-clear").addEventListener("click", async () => {
+      if (currentDocs.length === 0) { showToast("지울 메시지가 없습니다.", "📭"); return; }
+      if (!confirm(`받은 메시지 ${currentDocs.length}개를 모두 지울까요?`)) return;
+      try {
+        const snap = await getDocs(messagesCol);
+        for (let i = 0; i < snap.docs.length; i += 400) {
+          const batch = writeBatch(db);
+          snap.docs.slice(i, i + 400).forEach(d => batch.delete(d.ref));
+          await batch.commit();
+        }
+        showToast("받은 메시지를 모두 지웠습니다.", "🗑️");
+      } catch (err) {
+        console.error(err);
+        showToast("지우지 못했습니다.", "⚠️");
+      }
+    });
 
-    document.getElementById("bookmarklet-link").href = bookmarkletScript;
+    $("btn-change-pw").addEventListener("click", async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+      const oldPw = prompt("현재 비밀번호를 입력하세요.");
+      if (!oldPw) return;
+      const newPw = prompt("새 비밀번호를 입력하세요. (6자 이상)");
+      if (!newPw) return;
+      if (newPw.length < 6) { showToast("새 비밀번호는 6자 이상이어야 합니다.", "⚠️"); return; }
+      try {
+        await reauthenticateWithCredential(user, EmailAuthProvider.credential(TEACHER_EMAIL, oldPw));
+        await updatePassword(user, newPw);
+        showToast("선생님 비밀번호를 바꿨습니다.", "🔑");
+      } catch (err) {
+        console.error(err);
+        showToast("비밀번호를 바꾸지 못했습니다. 현재 비밀번호를 확인해 주세요.", "⚠️");
+      }
+    });
   </script>
 </body>
 </html>
